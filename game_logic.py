@@ -68,3 +68,53 @@ class GameBoard:
         
         self.ships.append(ship_cells)
         return True
+
+    def shoot(self, x, y):
+        """Выстрел по клетке. Возвращает результат"""
+        # Проверяем границы
+        if x < 0 or x >= self.size or y < 0 or y >= self.size:
+            return "invalid"
+        
+        cell = self.field[y][x]
+        
+        # Уже стреляли сюда
+        if cell in [2, 3, 4]:  # miss, hit, destroyed
+            return "invalid"
+        
+        # Промах
+        if cell == 0:
+            self.field[y][x] = 2
+            return "miss"
+        
+        # Попадание
+        if cell == 1:
+            self.field[y][x] = 3
+            
+            # Проверяем, уничтожен ли корабль
+            for ship in self.ships:
+                if (x, y) in ship:
+                    destroyed = True
+                    for sx, sy in ship:
+                        if self.field[sy][sx] != 3:
+                            destroyed = False
+                            break
+                    
+                    if destroyed:
+                        # Помечаем корабль как уничтоженный
+                        for sx, sy in ship:
+                            self.field[sy][sx] = 4
+                        
+                        # Проверяем победу
+                        if self.all_ships_destroyed():
+                            return "win"
+                        return "destroy"
+            
+            return "hit"
+    
+    def all_ships_destroyed(self):
+        """Проверить, все ли корабли уничтожены"""
+        for ship in self.ships:
+            for x, y in ship:
+                if self.field[y][x] != 4:
+                    return False
+        return True
