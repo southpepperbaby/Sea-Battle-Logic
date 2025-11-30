@@ -118,3 +118,23 @@ class GameBoard:
                 if self.field[y][x] != 4:
                     return False
         return True
+
+    def place_ships_randomly(self):
+        """Расставить все корабли рандомно"""
+        ships_to_place = {4: 1, 3: 2, 2: 3, 1: 4}
+        
+        for length, count in ships_to_place.items():
+            for _ in range(count):
+                placed = False
+                attempts = 0
+                while not placed and attempts < 1000:
+                    x = random.randint(0, self.size - 1)
+                    y = random.randint(0, self.size - 1)
+                    horizontal = random.choice([True, False])
+                    placed = self.place_ship(x, y, length, horizontal)
+                    attempts += 1
+                
+                if not placed:
+                    print("Не удалось разместить корабль!")
+                    return False
+        return True
