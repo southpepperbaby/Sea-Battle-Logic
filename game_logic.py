@@ -138,3 +138,17 @@ class GameBoard:
                     print("Не удалось разместить корабль!")
                     return False
         return True
+    
+    def get_field_for_display(self, hide_ships=False):
+        """Поле для отображения создать"""
+        result = []
+        for y in range(self.size):
+            row = []
+            for x in range(self.size):
+                cell = self.field[y][x]
+                if hide_ships and cell == 1:
+                    row.append(0)  # Скрываем корабли
+                else:
+                    row.append(cell)
+            result.append(row)
+        return result
